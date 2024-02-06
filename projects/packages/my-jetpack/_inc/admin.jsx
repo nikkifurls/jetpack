@@ -19,7 +19,12 @@ import {
 	CRMInterstitial,
 	CreatorInterstitial,
 	ExtrasInterstitial,
+<<<<<<< HEAD
 	JetpackAiInterstitial,
+=======
+	FirewallInterstitial,
+	JetpackAIInterstitial,
+>>>>>>> c000580b3b (Fix post activation URL)
 	ProtectInterstitial,
 	ScanInterstitial,
 	SocialInterstitial,
@@ -68,10 +73,7 @@ const MyJetpack = () => {
 							<Route path="/add-jetpack-ai" element={ <JetpackAiInterstitial /> } />
 							<Route path="/add-extras" element={ <ExtrasInterstitial /> } />
 							<Route path="/add-protect" element={ <ProtectInterstitial /> } />
-							<Route
-								path="/add-protect-firewall"
-								element={ <ProtectInterstitial postActivationUrl="firewall" /> }
-							/>
+							<Route path="/add-firewall" element={ <FirewallInterstitial /> } />
 							<Route path="/add-scan" element={ <ScanInterstitial /> } />
 							<Route path="/add-social" element={ <SocialInterstitial /> } />
 							<Route path="/add-search" element={ <SearchInterstitial /> } />
