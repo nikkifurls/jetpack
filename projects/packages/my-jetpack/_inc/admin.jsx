@@ -19,12 +19,8 @@ import {
 	CRMInterstitial,
 	CreatorInterstitial,
 	ExtrasInterstitial,
-<<<<<<< HEAD
 	JetpackAiInterstitial,
-=======
 	FirewallInterstitial,
-	JetpackAIInterstitial,
->>>>>>> c000580b3b (Fix post activation URL)
 	ProtectInterstitial,
 	ScanInterstitial,
 	SocialInterstitial,
