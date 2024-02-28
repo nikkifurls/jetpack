@@ -596,8 +596,8 @@ class Launchpad_Task_Lists {
 	 * @param array $task Task definition.
 	 * @return boolean
 	 */
-	public function is_task_disabled( $task ) {
-		return $this->load_value_from_callback( $task, 'is_disabled_callback', false );
+	public function is_task_disabled( $task ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		return false;
 	}
 
 	/**
@@ -606,15 +606,8 @@ class Launchpad_Task_Lists {
 	 * @param Task $task Task definition.
 	 * @return boolean
 	 */
-	public function is_task_complete( $task ) {
-		// First we calculate the value from our statuses option. This will get passed to the callback, if it exists.
-		// Othewise there is the temptation for the callback to fall back to the option, which would cause infinite recursion
-		// as it continues to calculate the callback which falls back to the option: ∞.
-		$statuses    = get_option( 'launchpad_checklist_tasks_statuses', array() );
-		$key         = $this->get_task_key( $task );
-		$is_complete = isset( $statuses[ $key ] ) ? $statuses[ $key ] : false;
-
-		return (bool) $this->load_value_from_callback( $task, 'is_complete_callback', $is_complete );
+	public function is_task_complete( $task ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		return false;
 	}
 
 	/**
