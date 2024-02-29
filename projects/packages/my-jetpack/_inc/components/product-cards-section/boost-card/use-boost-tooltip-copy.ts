@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import React, { useMemo } from 'react';
 import usePurchases from '../../../data/purchases/use-purchases';
 import { useProduct } from '../../../hooks/use-product';
@@ -10,12 +10,20 @@ const JETPACK_BOOST_PRODUCTS = [
 ];
 
 /**
- * Gets the tooltip copy based on the Boost letter grade and other factors.
+ * Gets the translated tooltip copy based on the Boost letter grade and other factors.
  *
- * @param {string} speedLetterGrade - The Boost speed letter grade.
+ * @param {object} props - React props
+ * @param {string} props.speedLetterGrade - The Boost score letter grade.
+ * @param {number|null} props.boostScoreIncrease - The number of points the score increased.
  * @returns {React.ReactElement | string} A translated JSX Element or string.
  */
-export function useBoostTooltipCopy( { speedLetterGrade } ) {
+export function useBoostTooltipCopy( {
+	speedLetterGrade,
+	boostScoreIncrease,
+}: {
+	speedLetterGrade: string;
+	boostScoreIncrease: number | null;
+} ): React.ReactElement | string {
 	const slug = 'boost';
 	const { data: purchases, isLoading } = usePurchases();
 	const hasBoostPaidPlan = useMemo( () => {
@@ -39,6 +47,16 @@ export function useBoostTooltipCopy( { speedLetterGrade } ) {
 	if ( isPluginActive ) {
 		//  Has a paid Boost plan
 		if ( hasBoostPaidPlan ) {
+			if ( boostScoreIncrease ) {
+				return sprintf(
+					/* translators: %d is the number (positive integer) of points the speed has increased */
+					__(
+						'Your speed has improved by %d points! Boost is working to enhance your performance with automated tools.',
+						'jetpack-my-jetpack'
+					),
+					boostScoreIncrease
+				);
+			}
 			switch ( speedLetterGrade ) {
 				case 'A':
 					return __(
@@ -63,6 +81,16 @@ export function useBoostTooltipCopy( { speedLetterGrade } ) {
 			}
 		}
 		// Has the Free Boost plan
+		if ( boostScoreIncrease ) {
+			return sprintf(
+				/* translators: %d is the number (integer) of points the speed has increased */
+				__(
+					'Your speed has improved by %d points! Upgrade Boost to unlock automated CSS and image optimization tools to maintain your high score.',
+					'jetpack-my-jetpack'
+				),
+				boostScoreIncrease
+			);
+		}
 		switch ( speedLetterGrade ) {
 			case 'A':
 				return __(
