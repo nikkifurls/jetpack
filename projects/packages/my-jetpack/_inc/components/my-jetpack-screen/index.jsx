@@ -93,7 +93,7 @@ export default function MyJetpackScreen() {
 	// Check using the global state instead of Redux so it only has effect after refreshing the page
 	const welcomeBannerHasBeenDismissed =
 		window?.myJetpackInitialState?.welcomeBanner.hasBeenDismissed;
-	const { showJetpackStatsCard = false } = window.myJetpackInitialState?.myJetpackFlags ?? {};
+	const { showFullJetpackStatsCard = false } = window.myJetpackInitialState?.myJetpackFlags ?? {};
 	const jetpackManage = window?.myJetpackInitialState?.jetpackManage;
 
 	// This way of handling Global notices in redux is being deprecated.
@@ -164,7 +164,7 @@ export default function MyJetpackScreen() {
 							/>
 						</Col>
 					) }
-					{ showJetpackStatsCard && (
+					{ showFullJetpackStatsCard && (
 						<Col
 							className={ classnames( {
 								[ styles.stats ]: statsDetails?.status !== PRODUCT_STATUSES.ERROR,
