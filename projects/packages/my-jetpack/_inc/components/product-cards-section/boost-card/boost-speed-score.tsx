@@ -210,8 +210,8 @@ const BoostSpeedScore: FC = () => {
 								score={
 									averageSpeedScore ||
 									getAverageSpeedScore(
-										latestBoostSpeedScores.scores.mobile,
-										latestBoostSpeedScores.scores.desktop
+										latestBoostSpeedScores?.scores?.mobile,
+										latestBoostSpeedScores?.scores?.desktop
 									)
 								}
 								active={ averageSpeedScore > 0 }
