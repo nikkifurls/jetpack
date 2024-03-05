@@ -60,6 +60,18 @@ class WPCOM_REST_API_V2_Endpoint_Update_Schedules_Test extends \WorDBless\BaseTe
 	}
 
 	/**
+	 * Tear down.
+	 */
+	public function tear_down() {
+		parent::tear_down();
+
+		wp_delete_user( $this->admin_id );
+		wp_delete_user( $this->editor_id );
+
+		wp_clear_scheduled_hook( 'jetpack_scheduled_update' );
+	}
+
+	/**
 	 * Test get_items.
 	 *
 	 * @covers ::get_items
@@ -184,7 +196,7 @@ class WPCOM_REST_API_V2_Endpoint_Update_Schedules_Test extends \WorDBless\BaseTe
 	/**
 	 * Can't have multiple schedules for the same time.
 	 *
-	 * @covers ::create_item_permissions_check
+	 * @covers ::validate_schedule
 	 */
 	public function test_creating_schedules_for_same_time() {
 		$plugins = array(
@@ -216,17 +228,12 @@ class WPCOM_REST_API_V2_Endpoint_Update_Schedules_Test extends \WorDBless\BaseTe
 	/**
 	 * Can't have more than two schedules.
 	 *
-	 * @covers ::create_item_permissions_check
+	 * @covers ::validate_schedule
 	 */
 	public function test_creating_more_than_two_schedules() {
-		$plugins = array(
-			'gutenberg/gutenberg.php',
-			'custom-plugin/custom-plugin.php',
-		);
-
 		// Create two schedules.
-		wp_schedule_event( strtotime( 'next Monday 8:00' ), 'weekly', 'jetpack_scheduled_update', $plugins );
-		wp_schedule_event( strtotime( 'next Tuesday 9:00' ), 'daily', 'jetpack_scheduled_update', $plugins );
+		wp_schedule_event( strtotime( 'next Monday 8:00' ), 'weekly', 'jetpack_scheduled_update', array( 'gutenberg/gutenberg.php' ) );
+		wp_schedule_event( strtotime( 'next Tuesday 9:00' ), 'daily', 'jetpack_scheduled_update', array( 'custom-plugin/custom-plugin.php' ) );
 
 		// Number 3.
 		$request = new WP_REST_Request( 'POST', '/wpcom/v2/update-schedules' );
@@ -242,10 +249,43 @@ class WPCOM_REST_API_V2_Endpoint_Update_Schedules_Test extends \WorDBless\BaseTe
 				),
 			)
 		);
+
+		wp_set_current_user( $this->admin_id );
 		$result = rest_do_request( $request );
 
 		$this->assertSame( 403, $result->get_status() );
 		$this->assertSame( 'rest_forbidden', $result->get_data()['code'] );
+	}
+
+	/**
+	 * Removes plugins from the autoupdate list when creating a schedule.
+	 *
+	 * @covers ::create_item
+	 */
+	public function test_updating_autoupdate_plugins_on_create() {
+		$unscheduled_plugins = array( 'hello-dolly/hello-dolly.php' );
+		$plugins             = array(
+			'custom-plugin/custom-plugin.php',
+			'gutenberg/gutenberg.php',
+		);
+
+		update_option( 'auto_update_plugins', array( 'hello-dolly/hello-dolly.php', 'gutenberg/gutenberg.php' ) );
+
+		$request = new WP_REST_Request( 'POST', '/wpcom/v2/update-schedules' );
+		$request->set_body_params(
+			array(
+				'plugins'  => $plugins,
+				'schedule' => array(
+					'timestamp' => strtotime( 'next Monday 8:00' ),
+					'interval'  => 'weekly',
+				),
+			)
+		);
+
+		wp_set_current_user( $this->admin_id );
+		rest_do_request( $request );
+
+		$this->assertEquals( $unscheduled_plugins, get_option( 'auto_update_plugins' ) );
 	}
 
 	/**
@@ -429,6 +469,39 @@ class WPCOM_REST_API_V2_Endpoint_Update_Schedules_Test extends \WorDBless\BaseTe
 
 		$this->assertSame( 404, $result->get_status() );
 		$this->assertSame( 'rest_invalid_schedule', $result->get_data()['code'] );
+	}
+
+	/**
+	 * Adds plugins to the autoupdate list when deleting a schedule.
+	 *
+	 * @covers ::delete_item
+	 */
+	public function test_updating_autoupdate_plugins_on_delete() {
+		$auto_update = array( 'hello-dolly/hello-dolly.php' );
+		$plugins_1   = array( 'custom-plugin/custom-plugin.php' );
+		$plugins_2   = array(
+			'custom-plugin/custom-plugin.php',
+			'gutenberg/gutenberg.php',
+		);
+
+		// Existing auto-update list and deleted plugins that are not part of other schedules.
+		$expected_result = array(
+			'gutenberg/gutenberg.php',
+			'hello-dolly/hello-dolly.php',
+		);
+
+		$schedule_id = $this->generate_schedule_id( $plugins_2 );
+
+		wp_schedule_event( strtotime( 'next Tuesday 8:00' ), 'weekly', 'jetpack_scheduled_update', $plugins_1 );
+		wp_schedule_event( strtotime( 'next Monday 8:00' ), 'weekly', 'jetpack_scheduled_update', $plugins_2 );
+
+		update_option( 'auto_update_plugins', $auto_update );
+
+		$request = new WP_REST_Request( 'DELETE', '/wpcom/v2/update-schedules/' . $schedule_id );
+		wp_set_current_user( $this->admin_id );
+		rest_do_request( $request );
+
+		$this->assertSame( $expected_result, get_option( 'auto_update_plugins' ) );
 	}
 
 	/**
