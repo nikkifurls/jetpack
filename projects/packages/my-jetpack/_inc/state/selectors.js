@@ -1,7 +1,3 @@
-const getStatsCounts = state => {
-	return state.statsCounts?.data;
-};
-
 const getLifecycleStats = state => {
 	return state.lifecycleStats;
 };
@@ -37,21 +33,11 @@ const getGuessedSiteLifecycleStatus = state => {
 	return 'established';
 };
 
-const isFetchingStatsCounts = state => {
-	return state.statsCounts?.isFetching || false;
-};
-
-const statsCountsSelectors = {
-	getStatsCounts,
-	isFetchingStatsCounts,
-};
-
 const getWelcomeBannerHasBeenDismissed = state => {
 	return state.welcomeBanner?.hasBeenDismissed;
 };
 
 const selectors = {
-	...statsCountsSelectors,
 	...noticeSelectors,
 	getWelcomeBannerHasBeenDismissed,
 	getGuessedSiteLifecycleStatus,

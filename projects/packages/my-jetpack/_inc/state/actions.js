@@ -1,22 +1,11 @@
 import apiFetch from '@wordpress/api-fetch';
 import { REST_API_SITE_DISMISS_BANNER } from './constants';
 
-/*
- * Action constants
- */
-const SET_STATS_COUNTS_IS_FETCHING = 'SET_STATS_COUNTS_IS_FETCHING';
-const SET_STATS_COUNTS = 'SET_STATS_COUNTS';
 const SET_DISMISSED_WELCOME_BANNER_IS_FETCHING = 'SET_DISMISSED_WELCOME_BANNER_IS_FETCHING';
 const SET_DISMISSED_WELCOME_BANNER = 'SET_DISMISSED_WELCOME_BANNER';
 
 const SET_GLOBAL_NOTICE = 'SET_GLOBAL_NOTICE';
 const CLEAN_GLOBAL_NOTICE = 'CLEAN_GLOBAL_NOTICE';
-
-const setStatsCountsIsFetching = isFetching => {
-	return { type: SET_STATS_COUNTS_IS_FETCHING, isFetching };
-};
-
-const setStatsCounts = statsCounts => ( { type: SET_STATS_COUNTS, statsCounts } );
 
 const setDismissedWelcomeBannerIsFetching = isFetching => {
 	return { type: SET_DISMISSED_WELCOME_BANNER_IS_FETCHING, isFetching };
@@ -62,8 +51,6 @@ const noticeActions = {
 };
 
 const actions = {
-	setStatsCounts,
-	setStatsCountsIsFetching,
 	dismissWelcomeBanner,
 	...noticeActions,
 };
@@ -71,8 +58,6 @@ const actions = {
 export {
 	SET_GLOBAL_NOTICE,
 	CLEAN_GLOBAL_NOTICE,
-	SET_STATS_COUNTS_IS_FETCHING,
-	SET_STATS_COUNTS,
 	SET_DISMISSED_WELCOME_BANNER_IS_FETCHING,
 	SET_DISMISSED_WELCOME_BANNER,
 	actions as default,
