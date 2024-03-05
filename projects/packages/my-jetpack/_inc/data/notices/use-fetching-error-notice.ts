@@ -9,6 +9,7 @@ type ErrorNotice = {
 
 export const useFetchingErrorNotice = ( { infoName, isError, overrideMessage }: ErrorNotice ) => {
 	useNotice( {
+		name: infoName,
 		message:
 			overrideMessage ??
 			sprintf(
