@@ -69,12 +69,11 @@ class Scheduled_Updates {
 			}
 		);
 
-		( new Connection\Client() )->wpcom_json_api_request_as_blog(
+		( new Connection\Client() )->wpcom_json_api_request_as_user(
 			sprintf( '/sites/%d/hosting/scheduled-update', \Jetpack_Options::get_option( 'id' ) ),
 			'2',
 			array( 'method' => 'POST' ),
-			array( 'plugins' => $plugins ),
-			'wpcom'
+			array( 'plugins' => $plugins )
 		);
 	}
 
