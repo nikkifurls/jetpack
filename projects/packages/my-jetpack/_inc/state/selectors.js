@@ -46,14 +46,9 @@ const statsCountsSelectors = {
 	isFetchingStatsCounts,
 };
 
-const getWelcomeBannerHasBeenDismissed = state => {
-	return state.welcomeBanner?.hasBeenDismissed;
-};
-
 const selectors = {
 	...statsCountsSelectors,
 	...noticeSelectors,
-	getWelcomeBannerHasBeenDismissed,
 	getGuessedSiteLifecycleStatus,
 };
 
