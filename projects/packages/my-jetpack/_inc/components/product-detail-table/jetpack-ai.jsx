@@ -69,7 +69,7 @@ const AiTierDetailTableColumn = ( { cantInstallPlugin, onProductButtonClick, det
 		postCheckoutUrl.replace( /(^.*\/wp-admin\/)/i, '' ) ||
 		myJetpackCheckoutUri;
 
-	debug( referrerUrl, postCheckoutUrl, myJetpackCheckoutUri );
+	debug( { referrerUrl, postCheckoutUrl, myJetpackCheckoutUri } );
 	debug( 'after checkout redirect', redirectUrl );
 
 	// Set up the checkout workflow hook.
@@ -85,15 +85,16 @@ const AiTierDetailTableColumn = ( { cantInstallPlugin, onProductButtonClick, det
 
 	// Register the click handler for the product button.
 	const onClick = useCallback( () => {
+		onProductButtonClick?.( runCheckout, detail, tier );
 		// we mark current tier as "free", so only track when an actual upgrade is being triggered
-		if ( ! isFree ) {
-			recordEvent( 'jetpack_myjetpack_product_interstitial_add_link_click', { product: slug } );
-			onProductButtonClick?.( runCheckout, detail, tier );
-			return;
-		}
-		// TODO: simply go back if we have a redirect_to_referrer, into product page otherwise
-		recordEvent( 'jetpack_myjetpack_product_interstitial_free_link_click', { product: slug } );
-		window.location.href = redirectUrl;
+		// if ( ! isFree ) {
+		// 	onProductButtonClick?.( runCheckout, detail, tier );
+		// 	recordEvent( 'jetpack_myjetpack_product_interstitial_add_link_click', { product: slug } );
+		// 	return;
+		// }
+		// // TODO: simply go back if we have a redirect_to_referrer, into product page otherwise
+		// recordEvent( 'jetpack_myjetpack_product_interstitial_free_link_click', { product: slug } );
+		// window.location.href = redirectUrl;
 	}, [ recordEvent, onProductButtonClick, runCheckout, detail, tier, isFree, slug, redirectUrl ] );
 
 	// Compute the price per month.
@@ -101,7 +102,7 @@ const AiTierDetailTableColumn = ( { cantInstallPlugin, onProductButtonClick, det
 	const offPrice = introductoryOffer?.costPerInterval
 		? Math.round( ( introductoryOffer.costPerInterval / 12 ) * 100 ) / 100
 		: null;
-	debug( price );
+
 	const isOneMonthOffer =
 		introductoryOffer?.intervalUnit === 'month' && introductoryOffer?.intervalCount === 1;
 
@@ -280,7 +281,10 @@ const AiTierDetailTable = () => {
 					? product?.pricingForUi?.tiers?.[ tier ]?.isFree
 					: product?.pricingForUi?.isFree;
 				const needsPurchase = ! isFree && ! hasRequiredPlanOrTier;
-
+				debug( postActivationUrl );
+				debug( hasRequiredPlanOrTier );
+				debug( isFree );
+				debug( needsPurchase );
 				// If no purchase is needed, redirect the user to the product screen.
 				if ( ! needsPurchase ) {
 					if ( postActivationUrl ) {

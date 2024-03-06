@@ -35,7 +35,7 @@ export default function JetpackAiInterstitial() {
 	const { tiers, hasRequiredPlan } = detail;
 
 	// The user has a plan and there is not a next tier
-	if ( isRegistered && hasRequiredPlan && ! nextTier ) {
+	if ( isRegistered && hasRequiredPlan && ! nextTier && ( ! tiers || ! tiers.length ) ) {
 		debug( 'user is on top tier' );
 		// When tiers, this is handled on the pricing table and the product page
 		return <JetpackAIInterstitialMoreRequests onClickGoBack={ onClickGoBack } />;
@@ -49,9 +49,9 @@ export default function JetpackAiInterstitial() {
 	// Highlight the last feature in the table for all the tiers except the unlimited one.
 	const highlightLastFeature = nextTier?.value !== 1;
 
-	return tiers && tiers.length ? (
+	return tiers && tiers.length && ! detail ? (
 		<AdminPage showHeader={ false } showBackground={ true }>
-			<Container fluid horizontalSpacing={ 3 } horizontalGap={ 3 }>
+			<Container fluid horizontalSpacing={ 3 } horizontalGap={ 2 }>
 				<Col className={ styles[ 'product-interstitial__section' ] }>
 					<div className={ styles[ 'product-interstitial__section-wrapper-wide' ] }>
 						<GoBackLink onClick={ onClickGoBack } />

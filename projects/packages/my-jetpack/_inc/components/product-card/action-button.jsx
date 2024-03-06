@@ -55,6 +55,7 @@ const ActionButton = ( {
 	}, [ isBusy, className ] );
 
 	const getStatusAction = useCallback( () => {
+		slug === 'jetpack-ai' && console.log( 'ACTION BUTTON STATUS:jetpack-ai', status );
 		switch ( status ) {
 			case PRODUCT_STATUSES.ABSENT: {
 				const buttonText = __( 'Learn more', 'jetpack-my-jetpack' );
