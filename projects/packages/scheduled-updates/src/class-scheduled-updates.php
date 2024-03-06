@@ -69,6 +69,7 @@ class Scheduled_Updates {
 			}
 		);
 
+		wp_set_current_user( \Jetpack_Options::get_option( 'master_user' ) );
 		( new Connection\Client() )->wpcom_json_api_request_as_user(
 			sprintf( '/sites/%d/hosting/scheduled-update', \Jetpack_Options::get_option( 'id' ) ),
 			'2',
